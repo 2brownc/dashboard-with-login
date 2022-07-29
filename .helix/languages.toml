@@ -1,0 +1,95 @@
+[[language]]
+name = "javascript"
+scope = "source.js"
+injection-regex = "^(js|javascript)$"
+file-types = ["js", "jsx", "mjs", "cjs"]
+shebangs = ["node"]
+roots = []
+comment-token = "//"
+# TODO: highlights-params
+language-server = { command = "node_modules/.bin/typescript-language-server", args = ["--stdio"], language-id = "javascript" }
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+
+[[language]]
+name = "jsx"
+scope = "source.jsx"
+injection-regex = "jsx"
+file-types = ["jsx"]
+roots = []
+comment-token = "//"
+language-server = { command = "node_modules/.bin/typescript-language-server", args = ["--stdio"], language-id = "javascript" }
+indent = { tab-width = 2, unit = "  " }
+grammar = "javascript"
+auto-format = true
+
+[[language]]
+name = "typescript"
+scope = "source.ts"
+injection-regex = "^(ts|typescript)$"
+file-types = ["ts"]
+shebangs = []
+roots = []
+# TODO: highlights-params
+language-server = { command = "node_modules/.bin/typescript-language-server", args = ["--stdio"], language-id = "typescript"}
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+
+
+[[language]]
+name = "tsx"
+scope = "source.tsx"
+injection-regex = "^(tsx)$" # |typescript
+file-types = ["tsx"]
+roots = []
+# TODO: highlights-params
+language-server = { command = "node_modules/.bin/typescript-language-server", args = ["--stdio"], language-id = "typescriptreact" }
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+
+[[language]]
+name = "css"
+scope = "source.css"
+injection-regex = "css"
+file-types = ["css", "scss"]
+roots = []
+language-server = { command = "node_modules/.bin/vscode-css-language-server", args = ["--stdio"] }
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+
+
+[[language]]
+name = "scss"
+scope = "source.scss"
+injection-regex = "scss"
+file-types = ["scss"]
+roots = []
+language-server = { command = "node_modules/.bin/vscode-css-language-server", args = ["--stdio"] }
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+
+
+[[language]]
+name = "html"
+scope = "text.html.basic"
+injection-regex = "html"
+file-types = ["html"]
+roots = []
+language-server = { command = "node_modules/.bin/vscode-html-language-server", args = ["--stdio"] }
+config = { "provideFormatter" = true }
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
