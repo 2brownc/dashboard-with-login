@@ -20,6 +20,6 @@
     ],
     "rules": {
       "react/prop-types": "off",
-      "react/require-default-props": "off",    
+      "react/require-default-props": "off"
     }
 }
