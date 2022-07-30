@@ -17,15 +17,18 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
+import Popper from '@mui/material/Popper';
+import Fade from '@mui/material/Fade';
 
 export default function SignUpPage() {
+
+  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [values, setValues] = React.useState({
     password: '',
     showPassword: false,
   });
-
-  const [showPasswordHelper, setShowPasswordHelper] = React.useState(false);
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -42,10 +45,26 @@ export default function SignUpPage() {
     event.preventDefault();
   };
 
-  const passwordFieldOnFocus = (event) => {
-    setShowPasswordHelper(true);
+  const handlePasswordFocus = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
   };
 
+  const handlePasswordBlur = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
+  };
+
+  const handleClose = (event) => {
+    console.log("closing..., pass helper", showPasswordHelper)
+    setShowPasswordHelper(!showPasswordHelper);
+    console.log("closed..., pass helper", showPasswordHelper)
+    setAnchorEl(null);
+
+  };
+
+  const canBeOpen = open && Boolean(anchorEl);
+  const id = canBeOpen ? 'transition-popper' : undefined;
   return (
     <Container fixed>
       <Grid
@@ -93,6 +112,8 @@ export default function SignUpPage() {
                         value={values.password}
                         autoComplete="new-password"
                         onChange={handleChange('password')}
+                        onFocus={handlePasswordFocus}
+                        onBlur={handlePasswordBlur}
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton
@@ -109,6 +130,25 @@ export default function SignUpPage() {
                       />
                     </FormControl>
 
+
+
+                    <Popper
+                      id={id}
+                      open={open}
+                      anchorEl={anchorEl}
+                      placement="top-start"
+                      transition
+                    >
+                      {({ TransitionProps }) => (
+                        <Fade {...TransitionProps} timeout={350}>
+                          <Paper elevation={5}>
+                            <Box sx={{ mb: 1 }}>
+                              The content of the Popper.
+                            </Box>
+                          </Paper>
+                        </Fade>
+                      )}
+                    </Popper>
                   </Stack>
                 </Grid>
 
