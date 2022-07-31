@@ -197,6 +197,13 @@ export default function SignUpPage() {
 
                 <Grid item xs={12}>
                   <Stack spacing={1}>
+                    <Divider>Let's get in touch.</Divider>
+                    <TextField label="Email" id="email" type="email" />
+                  </Stack>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Stack spacing={1}>
                     <Divider>Set your credentials.</Divider>
                     <TextField label="Username" id="username" type="text" />
 
@@ -207,6 +214,9 @@ export default function SignUpPage() {
                         ref={passwordRef}
                         type={passwordValues.showPassword ? 'text' : 'password'}
                         value={passwordValues.password}
+                        {/*
+                          make sure password field is not autocompleted
+                        */}
                         autoComplete="new-password"
                         onChange={handlePasswordOnChange('password')}
                         onBlur={handlePasswordOnBlur}
