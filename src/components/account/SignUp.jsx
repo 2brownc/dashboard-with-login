@@ -157,7 +157,7 @@ export default function SignUpPage() {
     setShowPasswordHelper(false);
 
     if (passwordIssues !== null) {
-      setPasswordValidMesssage("Recheck your password.");
+      setPasswordValidMesssage("Password is invalid.");
     }
   };
 
