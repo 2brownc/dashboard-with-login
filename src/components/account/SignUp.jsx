@@ -23,6 +23,13 @@ import PasswordValidator from 'password-validator';
 import FormHelperText from '@mui/material/FormHelperText';
 
 function HandlePasswordPolicy({ passwordIssues }) {
+  /*
+    show problems with the current password
+  
+    passwordIssues = [
+      {validation, message},
+    ]
+  */
   if (passwordIssues === null
     || passwordIssues === undefined) {
     return null;
@@ -34,7 +41,9 @@ function HandlePasswordPolicy({ passwordIssues }) {
       <ul>
         {
           passwordIssues.map(issue => (
-            <li key={issue.validation}>{issue.message}</li>
+            <li key={issue.validation}>
+              {issue.message}
+            </li>
           ))
         }
       </ul>
@@ -43,38 +52,67 @@ function HandlePasswordPolicy({ passwordIssues }) {
 
 };
 export default function SignUpPage() {
+  // popper needs an element reference
+  // of the password field
   const passwordRef = React.useRef();
 
+  // if to show the password helper dialog (popper)
   const [showPasswordHelper, setShowPasswordHelper] = React.useState(false);
+
+  // issues of the password against
+  // the password policy
   const [passwordIssues, setPasswordIssues] = React.useState(null);
+
+  /*
+  show an error message below password field when
+  the password does not confirm to the policy
+  and the password field is out of focus
+  so the user reminded to set a correct password
+  */
   const [passwordValidMessage, setPasswordValidMesssage] = React.useState("");
 
-  const [values, setValues] = React.useState({
+  /*
+  main state of password field's values
+  for show/hide password functionality
+  */
+  const [passwordValues, setPasswordValues] = React.useState({
     password: '',
     showPassword: false,
   });
 
+  // update state values of password field
   const handlePasswordOnChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+    setPasswordValues({ ...passwordValues, [prop]: event.target.value });
   };
 
+  // toggle visibility of password chars
   const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
+    setPasswordValues({
+      ...passwordValues,
+      showPassword: !passwordValues.showPassword,
     });
   };
 
+  // toggle password visibility when clicked
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  /*
+  show password helper when
+  password field is focused
+  */
   const handlePasswordOnFocus = () => {
     if (passwordIssues !== null) {
       setShowPasswordHelper(true);
     }
   };
 
+  /*
+  when password field loses focus
+  hide password helper
+  show error reminder if any
+  */
   const handlePasswordOnBlur = (event) => {
     setShowPasswordHelper(false);
 
@@ -92,29 +130,34 @@ export default function SignUpPage() {
     .has().digits(1, 'at least 1 number')
     .has().symbols(1, 'at least 1 symbol: #, $, !, &...');
 
+  /*
+  monitor password for policy conformance and
+  set if password helper, error reminder
+  are to be shown
+  */
   React.useEffect(() => {
     const issues = passwordPolicy.validate(
-      values.password,
+      passwordValues.password,
       { details: true },
     );
 
-    if (values.password !== ''
+    if (passwordValues.password !== ''
       && issues.length === 0) {
       setShowPasswordHelper(false);
       setPasswordValidMesssage("");
       setTimeout(() => setPasswordIssues(null), 400);
-    } else if (values.password !== ''
+    } else if (passwordValues.password !== ''
       && issues.length > 0) {
       setShowPasswordHelper(true);
       setPasswordIssues(issues);
-    } else if (values.password === ''
+    } else if (passwordValues.password === ''
       || issues.length === 0) {
       setShowPasswordHelper(false);
       setPasswordValidMesssage("");
 
       setTimeout(() => setPasswordIssues(null), 400);
     }
-  }, [values.password]);
+  }, [passwordValues.password]);
 
 
 
@@ -162,8 +205,8 @@ export default function SignUpPage() {
                       <OutlinedInput
                         id="password"
                         ref={passwordRef}
-                        type={values.showPassword ? 'text' : 'password'}
-                        value={values.password}
+                        type={passwordValues.showPassword ? 'text' : 'password'}
+                        value={passwordValues.password}
                         autoComplete="new-password"
                         onChange={handlePasswordOnChange('password')}
                         onBlur={handlePasswordOnBlur}
@@ -176,7 +219,7 @@ export default function SignUpPage() {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                             >
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                              {passwordValues.showPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
                           </InputAdornment>
                         }
