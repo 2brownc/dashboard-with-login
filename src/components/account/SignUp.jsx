@@ -21,6 +21,7 @@ import Popper from '@mui/material/Popper';
 import Fade from '@mui/material/Fade';
 import PasswordValidator from 'password-validator';
 import FormHelperText from '@mui/material/FormHelperText';
+import { validate as validateEmail } from 'check-email-validation';
 
 function HandlePasswordPolicy({ passwordIssues }) {
   /*
@@ -79,6 +80,45 @@ export default function SignUpPage() {
     password: '',
     showPassword: false,
   });
+
+  // remind user of an invalid email
+  const [emailValidMessage, setEmailValidMessage] = React.useState("");
+
+  /*
+  check validity of email
+  when the field loses focus
+  so the user is reminded
+  to correct the email if needed
+  */
+
+  const handleEmailOnBlur = (event) => {
+    const emailValidity = validateEmail(event.target.value);
+
+    if (emailValidity === true) {
+      setEmailValidMessage("");
+    } else if (emailValidity === false
+      && event.target.value !== '') {
+      setEmailValidMessage("Email is invalid.")
+    }
+  };
+
+  const handleEmailOnChange = (event) => {
+    const emailValidity = validateEmail(event.target.value);
+
+    /*
+    show validity of email when typing
+    only if it is already flagged as invalid
+    */
+    if (emailValidMessage !== '') {
+      if (emailValidity === true
+        || event.target.value === '') {
+        setEmailValidMessage("");
+      } else if (event.target.value !== ''
+        && emailValidity === false) {
+        setEmailValidMessage("Email is invalid.");
+      }
+    }
+  }
 
   // update state values of password field
   const handlePasswordOnChange = (prop) => (event) => {
@@ -198,7 +238,17 @@ export default function SignUpPage() {
                 <Grid item xs={12}>
                   <Stack spacing={1}>
                     <Divider>Let's get in touch.</Divider>
-                    <TextField label="Email" id="email" type="email" />
+                    <FormControl variant="outlined">
+                      <InputLabel htmlFor="email">Email</InputLabel>
+                      <OutlinedInput
+                        id="email"
+                        type="email"
+                        onBlur={handleEmailOnBlur}
+                        onChange={handleEmailOnChange}
+                        label="Email"
+                      />
+                      <FormHelperText sx={{ color: "error.main" }}>{emailValidMessage}</FormHelperText>
+                    </FormControl>
                   </Stack>
                 </Grid>
 
@@ -214,9 +264,6 @@ export default function SignUpPage() {
                         ref={passwordRef}
                         type={passwordValues.showPassword ? 'text' : 'password'}
                         value={passwordValues.password}
-                        {/*
-                          make sure password field is not autocompleted
-                        */}
                         autoComplete="new-password"
                         onChange={handlePasswordOnChange('password')}
                         onBlur={handlePasswordOnBlur}
