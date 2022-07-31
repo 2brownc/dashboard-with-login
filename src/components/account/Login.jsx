@@ -18,8 +18,11 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 
 export default function LoginPage() {
-
-  const [values, setValues] = React.useState({
+  /*
+  maitain state of password field vales
+  for password visibility toggle button
+  */
+  const [passwordValues, setPasswordValues] = React.useState({
     amount: '',
     password: '',
     weight: '',
@@ -27,20 +30,24 @@ export default function LoginPage() {
     showPassword: false,
   });
 
+  // update password field values
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+    setPasswordValues({ ...passwordValues, [prop]: event.target.value });
   };
 
+  // toggle password visibility
   const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
+    setPasswordValues({
+      ...passwordValues,
+      showPassword: !passwordValues.showPassword,
     });
   };
 
+  // prevent native event
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   return (
     <Container maxWidth="sm">
       <Grid
@@ -63,16 +70,15 @@ export default function LoginPage() {
               <Stack spacing={1}>
                 <TextField label="Username" id="outlined" type="username" />
 
-
                 <FormControl fullWidth sx={{ m: 1 }} variant="outlined">
                   <InputLabel htmlFor="password">Password</InputLabel>
                   <OutlinedInput
                     id="password"
-                    type={values.showPassword ? 'text' : 'password'}
+                    type={passwordValues.showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
-                    value={values.password}
+                    value={passwordValues.password}
                     onChange={handleChange('password')}
-                    endAdornment={
+                    endAdornment={(
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
@@ -80,14 +86,13 @@ export default function LoginPage() {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                          {passwordValues.showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
-                    }
+                    )}
                     label="Password"
                   />
                 </FormControl>
-
 
               </Stack>
               <Button variant="contained" fullWidth startIcon={<LoginIcon />}>Login</Button>
