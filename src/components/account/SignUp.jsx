@@ -19,18 +19,42 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Popper from '@mui/material/Popper';
 import Fade from '@mui/material/Fade';
+import PasswordValidator from 'password-validator';
+import FormHelperText from '@mui/material/FormHelperText';
 
+function HandlePasswordPolicy({ passwordIssues }) {
+  if (passwordIssues === null
+    || passwordIssues === undefined) {
+    return null;
+  }
+
+  return (
+    <div>
+      Password must have:
+      <ul>
+        {
+          passwordIssues.map(issue => (
+            <li key={issue.validation}>{issue.message}</li>
+          ))
+        }
+      </ul>
+    </div>
+  );
+
+};
 export default function SignUpPage() {
+  const passwordRef = React.useRef();
 
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [showPasswordHelper, setShowPasswordHelper] = React.useState(false);
+  const [passwordIssues, setPasswordIssues] = React.useState(null);
+  const [passwordValidMessage, setPasswordValidMesssage] = React.useState("");
 
   const [values, setValues] = React.useState({
     password: '',
     showPassword: false,
   });
 
-  const handleChange = (prop) => (event) => {
+  const handlePasswordOnChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
 
@@ -45,26 +69,55 @@ export default function SignUpPage() {
     event.preventDefault();
   };
 
-  const handlePasswordFocus = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((previousOpen) => !previousOpen);
+  const handlePasswordOnFocus = () => {
+    if (passwordIssues !== null) {
+      setShowPasswordHelper(true);
+    }
   };
 
-  const handlePasswordBlur = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((previousOpen) => !previousOpen);
+  const handlePasswordOnBlur = (event) => {
+    setShowPasswordHelper(false);
+
+    if (passwordIssues !== null) {
+      setPasswordValidMesssage("Recheck your password.");
+    }
   };
 
-  const handleClose = (event) => {
-    console.log("closing..., pass helper", showPasswordHelper)
-    setShowPasswordHelper(!showPasswordHelper);
-    console.log("closed..., pass helper", showPasswordHelper)
-    setAnchorEl(null);
+  // set password policy
+  const passwordPolicy = new PasswordValidator();
+  passwordPolicy
+    .is().min(8, 'a minimum length of 8 letters')
+    .has().uppercase(1, 'at least 1 upper case letter')
+    .has().lowercase(1, 'at least 1 lower case letter')
+    .has().digits(1, 'at least 1 number')
+    .has().symbols(1, 'at least 1 symbol: #, $, !, &...');
 
-  };
+  React.useEffect(() => {
+    const issues = passwordPolicy.validate(
+      values.password,
+      { details: true },
+    );
 
-  const canBeOpen = open && Boolean(anchorEl);
-  const id = canBeOpen ? 'transition-popper' : undefined;
+    if (values.password !== ''
+      && issues.length === 0) {
+      setShowPasswordHelper(false);
+      setPasswordValidMesssage("");
+      setTimeout(() => setPasswordIssues(null), 400);
+    } else if (values.password !== ''
+      && issues.length > 0) {
+      setShowPasswordHelper(true);
+      setPasswordIssues(issues);
+    } else if (values.password === ''
+      || issues.length === 0) {
+      setShowPasswordHelper(false);
+      setPasswordValidMesssage("");
+
+      setTimeout(() => setPasswordIssues(null), 400);
+    }
+  }, [values.password]);
+
+
+
   return (
     <Container fixed>
       <Grid
@@ -108,12 +161,13 @@ export default function SignUpPage() {
                       <InputLabel htmlFor="password">Password</InputLabel>
                       <OutlinedInput
                         id="password"
+                        ref={passwordRef}
                         type={values.showPassword ? 'text' : 'password'}
                         value={values.password}
                         autoComplete="new-password"
-                        onChange={handleChange('password')}
-                        onFocus={handlePasswordFocus}
-                        onBlur={handlePasswordBlur}
+                        onChange={handlePasswordOnChange('password')}
+                        onBlur={handlePasswordOnBlur}
+                        onFocus={handlePasswordOnFocus}
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton
@@ -128,22 +182,22 @@ export default function SignUpPage() {
                         }
                         label="Password"
                       />
+                      <FormHelperText sx={{ color: "error.main" }}>{passwordValidMessage}</FormHelperText>
                     </FormControl>
-
-
-
                     <Popper
-                      id={id}
-                      open={open}
-                      anchorEl={anchorEl}
-                      placement="top-start"
+                      id="transition-popper"
+                      open={showPasswordHelper}
+                      anchorEl={passwordRef.current}
+                      placement="top-end"
                       transition
                     >
                       {({ TransitionProps }) => (
                         <Fade {...TransitionProps} timeout={350}>
                           <Paper elevation={5}>
-                            <Box sx={{ mb: 1 }}>
-                              The content of the Popper.
+                            <Box sx={{ p: 1, mb: 1 }}>
+                              <HandlePasswordPolicy
+                                passwordIssues={passwordIssues}
+                              />
                             </Box>
                           </Paper>
                         </Fade>
