@@ -23,10 +23,24 @@ import PasswordValidator from 'password-validator';
 import FormHelperText from '@mui/material/FormHelperText';
 import { validate as validateEmail } from 'check-email-validation';
 
+function getPasswordPolicy() {
+  // set password policy
+  const passwordPolicy = new PasswordValidator();
+  return passwordPolicy
+    .is().min(8, 'a minimum length of 8 letters')
+    .has().uppercase(1, 'at least 1 upper case letter')
+    .has()
+    .lowercase(1, 'at least 1 lower case letter')
+    .has()
+    .digits(1, 'at least 1 number')
+    .has()
+    .symbols(1, 'at least 1 symbol: #, $, !, &...');
+}
+
 function HandlePasswordPolicy({ passwordIssues }) {
   /*
     show problems with the current password
-  
+
     passwordIssues = [
       {validation, message},
     ]
@@ -41,7 +55,7 @@ function HandlePasswordPolicy({ passwordIssues }) {
       Password must have:
       <ul>
         {
-          passwordIssues.map(issue => (
+          passwordIssues.map((issue) => (
             <li key={issue.validation}>
               {issue.message}
             </li>
@@ -50,8 +64,7 @@ function HandlePasswordPolicy({ passwordIssues }) {
       </ul>
     </div>
   );
-
-};
+}
 export default function SignUpPage() {
   // popper needs an element reference
   // of the password field
@@ -70,7 +83,7 @@ export default function SignUpPage() {
   and the password field is out of focus
   so the user reminded to set a correct password
   */
-  const [passwordValidMessage, setPasswordValidMesssage] = React.useState("");
+  const [passwordValidMessage, setPasswordValidMesssage] = React.useState('');
 
   /*
   main state of password field's values
@@ -82,7 +95,7 @@ export default function SignUpPage() {
   });
 
   // remind user of an invalid email
-  const [emailValidMessage, setEmailValidMessage] = React.useState("");
+  const [emailValidMessage, setEmailValidMessage] = React.useState('');
 
   /*
   check validity of email
@@ -95,10 +108,10 @@ export default function SignUpPage() {
     const emailValidity = validateEmail(event.target.value);
 
     if (emailValidity === true) {
-      setEmailValidMessage("");
+      setEmailValidMessage('');
     } else if (emailValidity === false
       && event.target.value !== '') {
-      setEmailValidMessage("Email is invalid.")
+      setEmailValidMessage('Email is invalid.');
     }
   };
 
@@ -112,13 +125,13 @@ export default function SignUpPage() {
     if (emailValidMessage !== '') {
       if (emailValidity === true
         || event.target.value === '') {
-        setEmailValidMessage("");
+        setEmailValidMessage('');
       } else if (event.target.value !== ''
         && emailValidity === false) {
-        setEmailValidMessage("Email is invalid.");
+        setEmailValidMessage('Email is invalid.');
       }
     }
-  }
+  };
 
   // update state values of password field
   const handlePasswordOnChange = (prop) => (event) => {
@@ -153,22 +166,13 @@ export default function SignUpPage() {
   hide password helper
   show error reminder if any
   */
-  const handlePasswordOnBlur = (event) => {
+  const handlePasswordOnBlur = () => {
     setShowPasswordHelper(false);
 
     if (passwordIssues !== null) {
-      setPasswordValidMesssage("Password is invalid.");
+      setPasswordValidMesssage('Password is invalid.');
     }
   };
-
-  // set password policy
-  const passwordPolicy = new PasswordValidator();
-  passwordPolicy
-    .is().min(8, 'a minimum length of 8 letters')
-    .has().uppercase(1, 'at least 1 upper case letter')
-    .has().lowercase(1, 'at least 1 lower case letter')
-    .has().digits(1, 'at least 1 number')
-    .has().symbols(1, 'at least 1 symbol: #, $, !, &...');
 
   /*
   monitor password for policy conformance and
@@ -176,7 +180,7 @@ export default function SignUpPage() {
   are to be shown
   */
   React.useEffect(() => {
-    const issues = passwordPolicy.validate(
+    const issues = getPasswordPolicy().validate(
       passwordValues.password,
       { details: true },
     );
@@ -184,7 +188,7 @@ export default function SignUpPage() {
     if (passwordValues.password !== ''
       && issues.length === 0) {
       setShowPasswordHelper(false);
-      setPasswordValidMesssage("");
+      setPasswordValidMesssage('');
       setTimeout(() => setPasswordIssues(null), 400);
     } else if (passwordValues.password !== ''
       && issues.length > 0) {
@@ -193,13 +197,11 @@ export default function SignUpPage() {
     } else if (passwordValues.password === ''
       || issues.length === 0) {
       setShowPasswordHelper(false);
-      setPasswordValidMesssage("");
+      setPasswordValidMesssage('');
 
       setTimeout(() => setPasswordIssues(null), 400);
     }
   }, [passwordValues.password]);
-
-
 
   return (
     <Container fixed>
@@ -207,7 +209,7 @@ export default function SignUpPage() {
         container
         justifyContent="center"
         alignItems="center"
-        sx={{ minHeight: "100vh" }}
+        sx={{ minHeight: '100vh' }}
       >
         <Grid
           item
@@ -222,7 +224,7 @@ export default function SignUpPage() {
                 alignItems="center"
               >
                 <Grid item xs={12}>
-                  < Typography variant="h5" component="div" mb={2}>
+                  <Typography variant="h5" component="div" mb={2}>
                     Sign Up
                   </Typography>
                 </Grid>
@@ -237,7 +239,7 @@ export default function SignUpPage() {
 
                 <Grid item xs={12}>
                   <Stack spacing={1}>
-                    <Divider>Let's get in touch.</Divider>
+                    <Divider>Let&apos;s get in touch.</Divider>
                     <FormControl variant="outlined">
                       <InputLabel htmlFor="email">Email</InputLabel>
                       <OutlinedInput
@@ -247,7 +249,7 @@ export default function SignUpPage() {
                         onChange={handleEmailOnChange}
                         label="Email"
                       />
-                      <FormHelperText sx={{ color: "error.main" }}>{emailValidMessage}</FormHelperText>
+                      <FormHelperText sx={{ color: 'error.main' }}>{emailValidMessage}</FormHelperText>
                     </FormControl>
                   </Stack>
                 </Grid>
@@ -268,7 +270,7 @@ export default function SignUpPage() {
                         onChange={handlePasswordOnChange('password')}
                         onBlur={handlePasswordOnBlur}
                         onFocus={handlePasswordOnFocus}
-                        endAdornment={
+                        endAdornment={(
                           <InputAdornment position="end">
                             <IconButton
                               aria-label="toggle password visibility"
@@ -279,10 +281,10 @@ export default function SignUpPage() {
                               {passwordValues.showPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
                           </InputAdornment>
-                        }
+                        )}
                         label="Password"
                       />
-                      <FormHelperText sx={{ color: "error.main" }}>{passwordValidMessage}</FormHelperText>
+                      <FormHelperText sx={{ color: 'error.main' }}>{passwordValidMessage}</FormHelperText>
                     </FormControl>
                     <Popper
                       id="transition-popper"
@@ -330,7 +332,7 @@ export default function SignUpPage() {
             </Box>
           </Paper>
         </Grid>
-      </Grid >
-    </Container >
+      </Grid>
+    </Container>
   );
 }
