@@ -16,8 +16,16 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
+import Fade from '@mui/material/Fade';
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
+  // fade in the login form
+  const [show, setShow] = React.useState(false);
+  React.useEffect(() => {
+    setTimeout(() => { setShow(true) }, 100)
+  }, []);
+
   /*
   maitain state of password field vales
   for password visibility toggle button
@@ -49,61 +57,84 @@ export default function LoginPage() {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        sx={{ minHeight: '100vh' }}
-      >
-        <Paper elevation={3}>
-          <Box p={4}>
-            <Stack
-              spacing={2}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Typography variant="h5" component="div" mb={2}>
-                Login
-              </Typography>
-              <Stack spacing={1}>
-                <TextField label="Username" id="outlined" type="username" />
+    <Fade in={show}>
+      <Container maxWidth="xs" sx={{ height: 1 }}>
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: 1 }}
+        >
+          <Grid item>
+            <Paper elevation={3}>
+              <Grid
+                container
+                item
+                spacing={3}
+                justifyContent="center"
+                alignItems="center"
+                p={4}
+              >
 
-                <FormControl fullWidth sx={{ m: 1 }} variant="outlined">
-                  <InputLabel htmlFor="password">Password</InputLabel>
-                  <OutlinedInput
-                    id="password"
-                    type={passwordValues.showPassword ? 'text' : 'password'}
-                    autoComplete="current-password"
-                    value={passwordValues.password}
-                    onChange={handleChange('password')}
-                    endAdornment={(
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {passwordValues.showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    )}
-                    label="Password"
-                  />
-                </FormControl>
+                <Grid item xs={12}>
+                  <Typography variant="h5" component="div">
+                    Login
+                  </Typography>
+                </Grid>
 
-              </Stack>
-              <Button variant="contained" fullWidth startIcon={<LoginIcon />}>Login</Button>
-              <Button variant="outlined" fullWidth startIcon={<AutoModeIcon />}>Demo Login</Button>
-              <Typography variant="subtitle2" component="div" sx={{ margin: 'auto' }}>
-                Don&apos;t have an account? Sign Up!
-              </Typography>
-            </Stack>
-          </Box>
-        </Paper>
-      </Grid>
-    </Container>
+                <Grid item xs={12}>
+                  <Stack spacing={1}>
+                    <TextField label="Username" id="outlined" type="username" />
+
+                    <FormControl variant="outlined">
+                      <InputLabel htmlFor="password">Password</InputLabel>
+                      <OutlinedInput
+                        id="password"
+                        type={passwordValues.showPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        value={passwordValues.password}
+                        onChange={handleChange('password')}
+                        endAdornment={(
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {passwordValues.showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        )}
+                        label="Password"
+                      />
+                    </FormControl>
+
+                  </Stack>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Button variant="contained" fullWidth startIcon={<LoginIcon />}>Login</Button>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Stack
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Button variant="outlined" fullWidth startIcon={<AutoModeIcon />}>Demo Login</Button>
+                    <Typography variant="subtitle2" component="div" sx={{ margin: 'auto' }}>
+                      Don&apos;t have an account? <Link to='../signup'>Sign Up!</Link>
+                    </Typography>
+                  </Stack>
+                </Grid>
+
+              </Grid>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+    </Fade>
   );
 }

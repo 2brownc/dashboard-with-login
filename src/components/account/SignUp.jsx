@@ -22,6 +22,8 @@ import Fade from '@mui/material/Fade';
 import PasswordValidator from 'password-validator';
 import FormHelperText from '@mui/material/FormHelperText';
 import { validate as validateEmail } from 'check-email-validation';
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function getPasswordPolicy() {
   // set password policy
@@ -66,6 +68,15 @@ function HandlePasswordPolicy({ passwordIssues }) {
   );
 }
 export default function SignUpPage() {
+  // fade in the sign up form
+  const [show, setShow] = React.useState(false);
+  React.useEffect(() => {
+    setTimeout(() => { setShow(true) }, 100)
+  }, []);
+
+  // use hooks to navigate using React Router
+  const reactRouterNavigate = useNavigate();
+
   // popper needs an element reference
   // of the password field
   const passwordRef = React.useRef();
@@ -203,28 +214,36 @@ export default function SignUpPage() {
     }
   }, [passwordValues.password]);
 
+  /*
+  use React Router hook useHistory()
+  to navigate to "login form" path
+  */
+  const handleGoBackClick = () => {
+    reactRouterNavigate('../login', { replace: true });
+  }
+
   return (
-    <Container fixed>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        sx={{ minHeight: '100vh' }}
-      >
+    <Fade in={show}>
+      <Container maxWidth="xs" sx={{ height: 1 }}>
         <Grid
-          item
+          container
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: 1 }}
         >
-          <Paper elevation={3}>
-            <Box width={400} m={4}>
+          <Grid item>
+            <Paper elevation={3}>
               <Grid
                 container
                 item
                 spacing={3}
                 justifyContent="center"
                 alignItems="center"
+                p={4}
               >
+
                 <Grid item xs={12}>
-                  <Typography variant="h5" component="div" mb={2}>
+                  <Typography variant="h5" component="div">
                     Sign Up
                   </Typography>
                 </Grid>
@@ -321,18 +340,20 @@ export default function SignUpPage() {
                 <Grid item xs={12}>
                   <Stack spacing={1}>
                     <Divider>Don&apos;t want an account?</Divider>
-                    <Button variant="outlined" startIcon={<ArrowBackIosNewIcon />}>Go Back</Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<ArrowBackIosNewIcon />}
+                      onClick={handleGoBackClick}
+                    >
+                      Go Back
+                    </Button>
                   </Stack>
                 </Grid>
-
-                <Grid item xs={12}>
-                  {' '}
-                </Grid>
               </Grid>
-            </Box>
-          </Paper>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </Fade>
   );
 }
