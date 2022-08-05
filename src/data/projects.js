@@ -1,4 +1,4 @@
-export const projectData = [
+export const projectData = [ // eslint-disable-line import/prefer-default-export
   {
     name: 'Reel Estate',
     tech: ['NodeJS', 'ReactJS', 'OpenStreetMap'],

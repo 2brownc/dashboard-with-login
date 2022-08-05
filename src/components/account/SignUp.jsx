@@ -486,6 +486,7 @@ status of creating an account
                       sx={{ zIndex: 1 }}
                     >
                       {({ TransitionProps }) => (
+
                         <Fade {...TransitionProps} timeout={350}>
                           <Paper elevation={5}>
                             <Box sx={{ p: 1, mb: 2 }}>
@@ -495,6 +496,7 @@ status of creating an account
                             </Box>
                           </Paper>
                         </Fade>
+
                       )}
                     </Popper>
                   </Stack>
