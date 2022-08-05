@@ -473,13 +473,14 @@ status of creating an account
                       id="transition-popper"
                       open={showPasswordHelper}
                       anchorEl={passwordRef.current}
-                      placement="top-end"
+                      placement="top"
                       transition
+                      sx={{ zIndex: 1 }}
                     >
                       {({ TransitionProps }) => (
                         <Fade {...TransitionProps} timeout={350}>
                           <Paper elevation={5}>
-                            <Box sx={{ p: 1, mb: 1 }}>
+                            <Box sx={{ p: 1, mb: 2 }}>
                               <HandlePasswordPolicy
                                 passwordIssues={passwordIssues}
                               />
