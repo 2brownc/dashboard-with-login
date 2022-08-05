@@ -371,10 +371,18 @@ status of creating an account
                 p={4}
               >
 
-                <Grid item xs={12}>
-                  <Typography variant="h5" component="div">
-                    Sign Up
-                  </Typography>
+                <Grid
+                  item
+                  container
+                  justifyContent="center"
+                  alignItems="center"
+                  xs={12}
+                >
+                  <Grid item>
+                    <Typography variant="h5" component="div">
+                      Sign Up
+                    </Typography>
+                  </Grid>
                 </Grid>
 
                 <Grid item xs={12}>
