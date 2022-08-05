@@ -36,10 +36,18 @@ export default function DashboardMain() {
         <Grid item xs={6}>
           <CountCard count={12} message="projects this month" interval={500} counterPadding={1} />
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6" component="div">
-            Current Projects
-          </Typography>
+        <Grid
+          item
+          container
+          justifyContent="center"
+          alignItems="center"
+          xs={12}
+        >
+          <Grid item>
+            <Typography variant="h6" component="div">
+              Current Projects
+            </Typography>
+          </Grid>
         </Grid>
         <Grid item container spacing={2} xs={12}>
 

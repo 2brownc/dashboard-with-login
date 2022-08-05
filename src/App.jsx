@@ -12,6 +12,7 @@ import Home from './components/home/Home';
 import LoginProgress from './components/account/LoginProgress';
 
 import UserContext from './auth/UserContext';
+import ProtectedRoute from './auth/ProtectedRoute';
 
 function App() {
   const [user, setUser] = React.useState(null);
@@ -25,11 +26,13 @@ function App() {
             <Route path="loginprogress" element={<LoginProgress />}>
               <Route path=":loginType" element={<LoginProgress />} />
             </Route>
-            <Route path="dashboard" element={<DashboardMain />} />
+            <Route element={<ProtectedRoute />} >
+              <Route path="dashboard" element={<DashboardMain />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
-    </UserContext.Provider>
+    </UserContext.Provider >
   );
 }
 
