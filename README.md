@@ -2,7 +2,7 @@
 
 A login form is presented; after successful login a dashboard is loaded. An new account can also be created using the Signup form. 
 
-## Project Overview
+## App Overview
 
 ### Login Form
 
@@ -12,7 +12,10 @@ A login form is presented; after successful login a dashboard is loaded. An new 
 
 ### Signup Form
 
-* Validition for username, password and email.
+* Fields in the Signup Form are validated.
+* email field validation: checks if the entered email confirms to standard email address format. 
+* username field validation: checks if an account with same username exists as user types in the desired username.
+* password field validation: checks if the password is strong as in having at least one lowercase letter, one uppercase letter, one number and one symbol. Minimum length of 8 characters is also enforced.
 * A popper for helping user choose a strong password.
 
 ### Dashboard
