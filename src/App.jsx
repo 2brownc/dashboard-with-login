@@ -3,24 +3,33 @@ import {
   BrowserRouter,
   Routes,
   Route,
-} from "react-router-dom";
+} from 'react-router-dom';
 
 import LoginPage from './components/account/Login';
 import SignUpPage from './components/account/SignUp';
 import DashboardMain from './components/dashboard/Main';
 import Home from './components/home/Home';
-function App() {
+import LoginProgress from './components/account/LoginProgress';
 
+import UserContext from './auth/UserContext';
+
+function App() {
+  const [user, setUser] = React.useState(null);
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />}>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignUpPage />} />
-          <Route path="dashboard" element={<DashboardMain />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <UserContext.Provider value={{ user, setUser }}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />}>
+            <Route index element={<LoginPage />} />
+            <Route path="signup" element={<SignUpPage />} />
+            <Route path="loginprogress" element={<LoginProgress />}>
+              <Route path=":loginType" element={<LoginProgress />} />
+            </Route>
+            <Route path="dashboard" element={<DashboardMain />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UserContext.Provider>
   );
 }
 

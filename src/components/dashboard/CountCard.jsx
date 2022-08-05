@@ -3,7 +3,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 
 export default function CountCard({ count, message, interval }) {
   // maintain state of the counter variable
@@ -12,12 +11,12 @@ export default function CountCard({ count, message, interval }) {
   React.useEffect(() => {
     if (counter < count) {
       // keep incrementing counter by given interval
-      setTimeout(() => setCounter(counter + 1), interval)
+      setTimeout(() => setCounter(counter + 1), interval);
     }
-  }, [counter]);
+  }, [counter, count, interval]);
 
   return (
-    <Card sx={{ height: "100%" }}>
+    <Card sx={{ height: '100%' }}>
       <CardContent>
         <Stack
           spacing={4}
@@ -26,21 +25,21 @@ export default function CountCard({ count, message, interval }) {
         >
           <Box
             sx={{
-              fontSize: "h4.fontSize",
+              fontSize: 'h4.fontSize',
             }}
           >
             {counter}
           </Box>
           <Box
             sx={{
-              fontSize: "h6.fontSize",
-              fontVariant: "small-caps",
+              fontSize: 'h6.fontSize',
+              fontVariant: 'small-caps',
             }}
           >
             {message}
           </Box>
         </Stack>
       </CardContent>
-    </Card >
+    </Card>
   );
 }

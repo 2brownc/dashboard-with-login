@@ -4,7 +4,6 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -22,8 +21,10 @@ import Fade from '@mui/material/Fade';
 import PasswordValidator from 'password-validator';
 import FormHelperText from '@mui/material/FormHelperText';
 import { validate as validateEmail } from 'check-email-validation';
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
+import { userSignUp, isNewUser } from '../../auth/auth';
+import UserContext from '../../auth/UserContext';
 
 function getPasswordPolicy() {
   // set password policy
@@ -71,30 +72,19 @@ export default function SignUpPage() {
   // fade in the sign up form
   const [show, setShow] = React.useState(false);
   React.useEffect(() => {
-    setTimeout(() => { setShow(true) }, 100)
+    setTimeout(() => { setShow(true); }, 100);
   }, []);
 
-  // use hooks to navigate using React Router
-  const reactRouterNavigate = useNavigate();
+  // get user from UserContext
+  const { setUser } = React.useContext(UserContext);
 
-  // popper needs an element reference
-  // of the password field
-  const passwordRef = React.useRef();
-
-  // if to show the password helper dialog (popper)
-  const [showPasswordHelper, setShowPasswordHelper] = React.useState(false);
-
-  // issues of the password against
-  // the password policy
-  const [passwordIssues, setPasswordIssues] = React.useState(null);
+  // PASSWORD VISIBILITY TOGGLE
 
   /*
-  show an error message below password field when
-  the password does not confirm to the policy
-  and the password field is out of focus
-  so the user reminded to set a correct password
+  popper needs an element reference
+  of the password field
   */
-  const [passwordValidMessage, setPasswordValidMesssage] = React.useState('');
+  const passwordRef = React.useRef();
 
   /*
   main state of password field's values
@@ -104,45 +94,6 @@ export default function SignUpPage() {
     password: '',
     showPassword: false,
   });
-
-  // remind user of an invalid email
-  const [emailValidMessage, setEmailValidMessage] = React.useState('');
-
-  /*
-  check validity of email
-  when the field loses focus
-  so the user is reminded
-  to correct the email if needed
-  */
-
-  const handleEmailOnBlur = (event) => {
-    const emailValidity = validateEmail(event.target.value);
-
-    if (emailValidity === true) {
-      setEmailValidMessage('');
-    } else if (emailValidity === false
-      && event.target.value !== '') {
-      setEmailValidMessage('Email is invalid.');
-    }
-  };
-
-  const handleEmailOnChange = (event) => {
-    const emailValidity = validateEmail(event.target.value);
-
-    /*
-    show validity of email when typing
-    only if it is already flagged as invalid
-    */
-    if (emailValidMessage !== '') {
-      if (emailValidity === true
-        || event.target.value === '') {
-        setEmailValidMessage('');
-      } else if (event.target.value !== ''
-        && emailValidity === false) {
-        setEmailValidMessage('Email is invalid.');
-      }
-    }
-  };
 
   // update state values of password field
   const handlePasswordOnChange = (prop) => (event) => {
@@ -162,6 +113,22 @@ export default function SignUpPage() {
     event.preventDefault();
   };
 
+  // PASSWORD VALIDATION
+
+  // if to show the password helper dialog (popper)
+  const [showPasswordHelper, setShowPasswordHelper] = React.useState(false);
+
+  // issues of the password against
+  // the password policy
+  const [passwordIssues, setPasswordIssues] = React.useState(null);
+
+  /*
+  show an error message below password field when
+  the password does not confirm to the policy
+  and the password field is out of focus
+  so the user reminded to set a correct password
+  */
+  const [passwordHelperText, setPasswordHelperText] = React.useState('');
   /*
   show password helper when
   password field is focused
@@ -181,7 +148,7 @@ export default function SignUpPage() {
     setShowPasswordHelper(false);
 
     if (passwordIssues !== null) {
-      setPasswordValidMesssage('Password is invalid.');
+      setPasswordHelperText('Password is invalid.');
     }
   };
 
@@ -199,7 +166,7 @@ export default function SignUpPage() {
     if (passwordValues.password !== ''
       && issues.length === 0) {
       setShowPasswordHelper(false);
-      setPasswordValidMesssage('');
+      setPasswordHelperText('');
       setTimeout(() => setPasswordIssues(null), 400);
     } else if (passwordValues.password !== ''
       && issues.length > 0) {
@@ -208,19 +175,181 @@ export default function SignUpPage() {
     } else if (passwordValues.password === ''
       || issues.length === 0) {
       setShowPasswordHelper(false);
-      setPasswordValidMesssage('');
+      setPasswordHelperText('');
 
       setTimeout(() => setPasswordIssues(null), 400);
     }
   }, [passwordValues.password]);
 
+  // EMAIL VALIDATION
+
   /*
-  use React Router hook useHistory()
-  to navigate to "login form" path
+  check validity of email
+  when the field loses focus
+  so the user is reminded
+  to correct the email if needed
   */
+  const [emailValue, setEmailValue] = React.useState('');
+  const [emailValidity, setEmailValidity] = React.useState(false);
+  const [emailHelperText, setEmailHelperText] = React.useState('');
+  /*
+  check if email is valid when it is being typed
+  */
+  React.useEffect(() => {
+    if (emailValue !== '') {
+      const isEmailValid = validateEmail(emailValue);
+      if (isEmailValid === true) {
+        setEmailValidity(true);
+      } else if (isEmailValid === false) {
+        setEmailValidity(false);
+      }
+    } else {
+      setEmailValidity(true);
+    }
+  }, [emailValue]);
+
+  const handleEmailOnBlur = () => {
+    if (emailValidity === true) {
+      setEmailHelperText('');
+    } else {
+      setEmailHelperText('Email is invalid.');
+    }
+  };
+
+  const handleEmailOnChange = (event) => {
+    // update email state
+    setEmailValue(event.target.value);
+  };
+
+  const handleEmailOnFocus = () => {
+    setEmailHelperText('');
+  };
+
+  // USERNAME VALIDATION
+
+  const [usernameValue, setUsernameValue] = React.useState('');
+  const [usernameValidity, setUsernameValidity] = React.useState(false);
+  const [usernameHelperText, setUsernameHelperText] = React.useState('');
+
+  // update state as username is typed in
+  const handleUsernameOnChange = (event) => {
+    setUsernameValue(event.target.value);
+  };
+
+  /*
+  check if an account with the username
+  already exists.
+  */
+
+  React.useEffect(() => {
+    if (usernameValue !== '') {
+      const accountIsNew = isNewUser(usernameValue);
+      if (accountIsNew === true) {
+        setUsernameValidity(true);
+        setUsernameHelperText('');
+      } else {
+        setUsernameValidity(false);
+        setUsernameHelperText('Username exists. Try something else.');
+      }
+    }
+  }, [usernameValue]);
+
+  // FIRST NAME
+  const [firstnameValue, setFirstnameValue] = React.useState('');
+  const [firstnameHelperText, setFirstnameHelperText] = React.useState('');
+
+  const handleFirstnameOnChange = (event) => {
+    setFirstnameValue(event.target.value);
+  };
+
+  React.useEffect(() => {
+    if (firstnameValue !== '') {
+      setFirstnameHelperText('');
+    }
+  }, [firstnameValue]);
+
+  // LAST NAME
+  const [lastnameValue, setLastnameValue] = React.useState('');
+  const [lastnameHelperText, setLastnameHelperText] = React.useState('');
+
+  const handleLastnameOnChange = (event) => {
+    setLastnameValue(event.target.value);
+  };
+
+  React.useEffect(() => {
+    if (lastnameValue !== '') {
+      setLastnameHelperText('');
+    }
+  }, [lastnameValue]);
+
+  /*
+check if username,password and email or valid
+and try and create a new user
+then redirect to a page that gives the
+status of creating an account
+*/
+  /*
+  use React Router hook to useNavigation
+  navigate to "login form" path
+  */
+  const reactRouterNavigate = useNavigate();
+
+  const handleUserSignUp = () => {
+    let submit = true;
+
+    /*
+      check if the field are empty
+      because being empty itself
+      will not trigger
+      invalid messages
+    */
+    if (firstnameValue === '') {
+      setFirstnameHelperText('Please enter your first name.');
+      submit = false;
+    }
+    if (lastnameValue === '') {
+      setLastnameHelperText('Please enter your last name.');
+      submit = false;
+    }
+    if (emailValue === '') {
+      setEmailHelperText('Please enter your email.');
+      submit = false;
+    }
+    if (usernameValue === '') {
+      setUsernameHelperText('You need a username to create an account.');
+      submit = false;
+    }
+    if (passwordValues.password === '') {
+      setPasswordHelperText('You need a password for your account.');
+      submit = false;
+    }
+
+    // check if the field are valid
+    if (passwordIssues !== null
+      || passwordValues.password === ''
+      || emailValidity === false
+      || usernameValidity === false) {
+      submit = false;
+    }
+
+    if (submit === true) {
+      const userInfo = userSignUp(
+        firstnameValue,
+        lastnameValue,
+        usernameValue,
+        emailValue,
+        passwordValues.password,
+      );
+
+      setUser(userInfo);
+
+      reactRouterNavigate('../loginprogress/aftersignup', { replace: true });
+    }
+  };
+
   const handleGoBackClick = () => {
-    reactRouterNavigate('../login', { replace: true });
-  }
+    reactRouterNavigate('/', { replace: true });
+  };
 
   return (
     <Fade in={show}>
@@ -251,8 +380,30 @@ export default function SignUpPage() {
                 <Grid item xs={12}>
                   <Stack spacing={1}>
                     <Divider>What is your name?</Divider>
-                    <TextField label="First Name" id="firstname" type="text" />
-                    <TextField label="Last Name" id="lastname" type="text" fullWidth />
+
+                    <FormControl variant="outlined">
+                      <InputLabel htmlFor="firstname">First Name</InputLabel>
+                      <OutlinedInput
+                        id="firstname"
+                        type="firstname"
+                        onChange={handleFirstnameOnChange}
+                        label="First Name"
+                        value={firstnameValue}
+                      />
+                      <FormHelperText sx={{ color: 'error.main' }}>{firstnameHelperText}</FormHelperText>
+                    </FormControl>
+
+                    <FormControl variant="outlined">
+                      <InputLabel htmlFor="lastname">Last Name</InputLabel>
+                      <OutlinedInput
+                        id="lastname"
+                        type="lastname"
+                        onChange={handleLastnameOnChange}
+                        label="Last Name"
+                        value={lastnameValue}
+                      />
+                      <FormHelperText sx={{ color: 'error.main' }}>{lastnameHelperText}</FormHelperText>
+                    </FormControl>
                   </Stack>
                 </Grid>
 
@@ -266,9 +417,11 @@ export default function SignUpPage() {
                         type="email"
                         onBlur={handleEmailOnBlur}
                         onChange={handleEmailOnChange}
+                        onFocus={handleEmailOnFocus}
                         label="Email"
+                        value={emailValue}
                       />
-                      <FormHelperText sx={{ color: 'error.main' }}>{emailValidMessage}</FormHelperText>
+                      <FormHelperText sx={{ color: 'error.main' }}>{emailHelperText}</FormHelperText>
                     </FormControl>
                   </Stack>
                 </Grid>
@@ -276,7 +429,18 @@ export default function SignUpPage() {
                 <Grid item xs={12}>
                   <Stack spacing={1}>
                     <Divider>Set your credentials.</Divider>
-                    <TextField label="Username" id="username" type="text" />
+
+                    <FormControl variant="outlined">
+                      <InputLabel htmlFor="username">Username</InputLabel>
+                      <OutlinedInput
+                        id="username"
+                        type="username"
+                        onChange={handleUsernameOnChange}
+                        label="Username"
+                        value={usernameValue}
+                      />
+                      <FormHelperText sx={{ color: 'error.main' }}>{usernameHelperText}</FormHelperText>
+                    </FormControl>
 
                     <FormControl variant="outlined">
                       <InputLabel htmlFor="password">Password</InputLabel>
@@ -303,7 +467,7 @@ export default function SignUpPage() {
                         )}
                         label="Password"
                       />
-                      <FormHelperText sx={{ color: 'error.main' }}>{passwordValidMessage}</FormHelperText>
+                      <FormHelperText sx={{ color: 'error.main' }}>{passwordHelperText}</FormHelperText>
                     </FormControl>
                     <Popper
                       id="transition-popper"
@@ -332,6 +496,7 @@ export default function SignUpPage() {
                     variant="contained"
                     startIcon={<PersonAddIcon />}
                     fullWidth
+                    onClick={handleUserSignUp}
                   >
                     Sign Up
                   </Button>

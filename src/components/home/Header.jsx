@@ -7,17 +7,33 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import WorkIcon from '@mui/icons-material/Work';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Stack from '@mui/material/Stack';
+import { useNavigate } from 'react-router-dom';
+
+import UserContext from '../../auth/UserContext';
 
 const pages = [];
-const settings = ['Logout'];
 
 export default function Header() {
+  // useNavigate to nagivate through routes
+  const reactRouterNavigate = useNavigate();
+
+  // get user info
+  const { user, setUser } = React.useContext(UserContext);
+
+  const handleLogoLinkClick = () => {
+    if (user === null) {
+      reactRouterNavigate('/', { replace: true });
+    } else {
+      reactRouterNavigate('../dashboard', { replace: true });
+    }
+  };
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -36,28 +52,51 @@ export default function Header() {
     setAnchorElUser(null);
   };
 
+  /*
+    logout by setting the
+    user state as null and
+    navigating to the 'login' page
+  */
+  const logout = () => {
+    setAnchorElUser(null);
+    setUser(null);
+    // navigate back to login page
+    reactRouterNavigate('/', { replace: true });
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <WorkIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
+          <Box
+            onClick={handleLogoLinkClick}
+            sx={{ cursor: 'pointer' }}
           >
-            ACME INC
-          </Typography>
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent="flex-end"
+              alignItems="center"
+            >
+              <WorkIcon />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                ACME INC
+              </Typography>
+            </Stack>
+          </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -126,43 +165,46 @@ export default function Header() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton
-                onClick={handleOpenUserMenu}
-                color="inherit"
-                sx={{ p: 0 }}
-              >
-                <AccountCircleIcon />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <IconButton>
-                    <Typography textAlign="center">{setting}</Typography>
+          {
+            user !== null
+            && (
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Profile">
+                  <IconButton
+                    onClick={handleOpenUserMenu}
+                    color="inherit"
+                    sx={{ p: 0 }}
+                  >
+                    <AccountCircleIcon />
                   </IconButton>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  <MenuItem key="logout-button" onClick={logout}>
+                    <IconButton>
+                      <Typography textAlign="center">Logout</Typography>
+                    </IconButton>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            )
+          }
         </Toolbar>
       </Container>
     </AppBar>
   );
-};
+}

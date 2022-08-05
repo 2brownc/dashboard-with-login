@@ -2,7 +2,6 @@ import React from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -17,14 +16,19 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import Fade from '@mui/material/Fade';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
+
+import { userLogin, createDemoUser } from '../../auth/auth';
+import UserContext from '../../auth/UserContext';
 
 export default function LoginPage() {
   // fade in the login form
   const [show, setShow] = React.useState(false);
   React.useEffect(() => {
-    setTimeout(() => { setShow(true) }, 100)
+    setTimeout(() => { setShow(true); }, 100);
   }, []);
+
+  // PASSWORD
 
   /*
   maitain state of password field vales
@@ -51,9 +55,90 @@ export default function LoginPage() {
     });
   };
 
-  // prevent native event
+  /*
+    prevent native event
+    when toggling password visibility
+  */
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  // USERNAME
+  const [usernameValue, setUsernameValue] = React.useState('');
+
+  const handleUsernameOnChange = (event) => {
+    setUsernameValue(event.target.value);
+  };
+
+  /*
+    use UserContext to set
+    the logged in user
+  */
+
+  const { setUser } = React.useContext(UserContext);
+
+  /*
+    user React Router hook, useNavigate
+    to navigate routes
+  */
+
+  const reactRouterNavigate = useNavigate();
+
+  // error message if login fails
+  const [LoginError, setLoginError] = React.useState('');
+  const [UsernameError, setUsernameError] = React.useState('');
+  const [PasswordError, setPasswordError] = React.useState('');
+
+  const login = () => {
+    // ensure non-empty values
+    let submit = true;
+    if (passwordValues.password === '') {
+      setPasswordError('Enter the password.');
+      submit = false;
+    } else {
+      setPasswordError('');
+    }
+    if (usernameValue === '') {
+      setUsernameError('Enter your username.');
+      submit = false;
+    } else {
+      setUsernameError('');
+    }
+    if (submit === true) {
+      const result = userLogin(usernameValue, passwordValues.password);
+
+      if (result.correctPassword === true) {
+        setLoginError('');
+        setUser(result);
+        reactRouterNavigate('../loginprogress/afterlogin');
+      } else {
+        setLoginError('Please recheck your username & password.');
+      }
+    }
+  };
+
+  // DEMO LOGIN
+
+  /*
+    a demo user is created in src/auth/auth.js
+    username: demouser
+    password: icyHam$ter48
+  */
+
+  const demoLogin = () => {
+    // create the demo user
+    createDemoUser();
+
+    // login as the demo user
+    const username = 'demouser';
+    const password = 'icyHam$ter48';
+
+    // fill the username & password fields
+    setUsernameValue(username);
+    setPasswordValues({
+      ...passwordValues,
+      password,
+    });
   };
 
   return (
@@ -84,7 +169,13 @@ export default function LoginPage() {
 
                 <Grid item xs={12}>
                   <Stack spacing={1}>
-                    <TextField label="Username" id="outlined" type="username" />
+                    <TextField
+                      label="Username"
+                      id="outlined"
+                      type="username"
+                      value={usernameValue}
+                      onChange={handleUsernameOnChange}
+                    />
 
                     <FormControl variant="outlined">
                       <InputLabel htmlFor="password">Password</InputLabel>
@@ -114,7 +205,28 @@ export default function LoginPage() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Button variant="contained" fullWidth startIcon={<LoginIcon />}>Login</Button>
+                  <Stack>
+                    <Typography sx={{ color: 'error.main' }}>
+                      {UsernameError}
+                    </Typography>
+                    <Typography sx={{ color: 'error.main' }}>
+                      {PasswordError}
+                    </Typography>
+                    <Typography sx={{ color: 'error.main' }}>
+                      {LoginError}
+                    </Typography>
+                  </Stack>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    startIcon={<LoginIcon />}
+                    onClick={login}
+                  >
+                    Login
+                  </Button>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -123,9 +235,18 @@ export default function LoginPage() {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Button variant="outlined" fullWidth startIcon={<AutoModeIcon />}>Demo Login</Button>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      startIcon={<AutoModeIcon />}
+                      onClick={demoLogin}
+                    >
+                      Demo Login
+                    </Button>
                     <Typography variant="subtitle2" component="div" sx={{ margin: 'auto' }}>
-                      Don&apos;t have an account? <Link to='../signup'>Sign Up!</Link>
+                      Don&apos;t have an account?
+                      {' '}
+                      <Link to="../signup">Sign Up!</Link>
                     </Typography>
                   </Stack>
                 </Grid>
@@ -134,6 +255,7 @@ export default function LoginPage() {
             </Paper>
           </Grid>
         </Grid>
+
       </Container>
     </Fade>
   );

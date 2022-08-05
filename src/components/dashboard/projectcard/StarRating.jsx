@@ -17,7 +17,7 @@ export default function Rating({ rating, total }) {
   add a half star in case percentage
   is indivisible by 20, again 100/5 = 20
   */
-  const halfStar = percentage % (100 / totalStars) === 0 ? false : true;
+  const halfStar = percentage % (100 / totalStars) !== 0;
 
   // remaing are empty stars
   const emptyStars = totalStars - fullStars - halfStar;
