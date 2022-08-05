@@ -17,6 +17,7 @@ A login form is presented; after successful login a dashboard is loaded. An new 
 * username field validation: checks if an account with same username exists as user types in the desired username.
 * password field validation: checks if the password is strong as in having at least one lowercase letter, one uppercase letter, one number and one symbol. Minimum length of 8 characters is also enforced.
 * A popper for helping user choose a strong password.
+* Password is stored as hash not plain text.
 
 ### Dashboard
 
@@ -30,5 +31,9 @@ A login form is presented; after successful login a dashboard is loaded. An new 
 * Adapts to the current screen size and correctly places the company logo and title.
 * Shows username for the logged in user.
 * Log out menu for the logged in user.
+
+### 404 Page
+
+* Non existent paths are redirected to a 404 page.
 
 Built on NodeJS using ReactJS, React Router and Material UI. 
