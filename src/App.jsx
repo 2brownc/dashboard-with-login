@@ -17,6 +17,7 @@ import ProtectedRoute from './auth/ProtectedRoute';
 
 function App() {
   const [user, setUser] = React.useState(null);
+  /* eslint-disable react/jsx-no-constructed-context-values */
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <BrowserRouter>
@@ -36,6 +37,7 @@ function App() {
       </BrowserRouter>
     </UserContext.Provider>
   );
+  /* eslint-enable */
 }
 
 export default App;

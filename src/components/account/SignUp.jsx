@@ -350,7 +350,7 @@ status of creating an account
   const handleGoBackClick = () => {
     reactRouterNavigate('/', { replace: true });
   };
-
+  /* eslint-disable react/jsx-props-no-spreading */
   return (
     <Fade in={show}>
       <Container maxWidth="xs" sx={{ height: 1 }}>
@@ -532,4 +532,5 @@ status of creating an account
       </Container>
     </Fade>
   );
+  /* eslint-enable */
 }
