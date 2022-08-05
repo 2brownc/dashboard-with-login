@@ -10,6 +10,7 @@ import SignUpPage from './components/account/SignUp';
 import DashboardMain from './components/dashboard/Main';
 import Home from './components/home/Home';
 import LoginProgress from './components/account/LoginProgress';
+import PageNotFound from './components/pages/PageNotFound';
 
 import UserContext from './auth/UserContext';
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -29,6 +30,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="dashboard" element={<DashboardMain />} />
             </Route>
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>

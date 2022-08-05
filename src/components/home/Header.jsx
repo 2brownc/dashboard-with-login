@@ -183,7 +183,16 @@ export default function Header() {
                     color="inherit"
                     sx={{ p: 0 }}
                   >
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                  >
                     <AccountCircleIcon />
+                    <Typography variant="subtitle1" component="span">
+                      {user.username}
+                    </Typography>
+                  </Stack>
                   </IconButton>
                 </Tooltip>
                 <Menu
