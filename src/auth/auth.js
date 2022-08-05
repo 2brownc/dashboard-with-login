@@ -1,5 +1,7 @@
 import SHA512 from 'sha512-es';
 
+const APP_AUTH_SLOT = 'DASHBOARD_WITH_APP_LOGIN_SLOT';
+
 function getHash(key) {
   return SHA512.hash(key);
 }
@@ -7,6 +9,23 @@ function getHash(key) {
 function compareHash(key, hash) {
   const hashFromKey = getHash(key);
   return hashFromKey === hash;
+}
+
+function getLoggedInUser() {
+  const result = JSON.parse(
+    localStorage.getItem(APP_AUTH_SLOT),
+  );
+
+  // if no user is found return null
+  return result ?? null;
+}
+
+function logoutUser() {
+  /*
+    clear localStorage so
+    so auto login won't happen
+  */
+  localStorage.setItem(APP_AUTH_SLOT, null);
 }
 
 function userLogin(username, password) {
@@ -29,6 +48,15 @@ function userLogin(username, password) {
       result.correctPassword = true;
       result.firstname = storedData.firstname;
       result.lastname = storedData.lastname;
+
+      /*
+        persist user login
+        through tab and window closing
+      */
+      localStorage.setItem(
+        APP_AUTH_SLOT,
+        JSON.stringify(storedData),
+      );
     } else {
       result.correctPassword = false;
     }
@@ -83,5 +111,10 @@ function createDemoUser() {
 }
 
 export {
-  userSignUp, userLogin, isNewUser, createDemoUser,
+  userSignUp,
+  userLogin,
+  isNewUser,
+  createDemoUser,
+  getLoggedInUser,
+  logoutUser,
 };

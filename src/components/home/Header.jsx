@@ -16,6 +16,7 @@ import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
 
 import UserContext from '../../auth/UserContext';
+import { logoutUser } from '../../auth/auth';
 
 const pages = [];
 
@@ -23,7 +24,7 @@ export default function Header() {
   // useNavigate to nagivate through routes
   const reactRouterNavigate = useNavigate();
 
-  // get user info
+  // get user login info
   const { user, setUser } = React.useContext(UserContext);
 
   const handleLogoLinkClick = () => {
@@ -60,6 +61,13 @@ export default function Header() {
   const logout = () => {
     setAnchorElUser(null);
     setUser(null);
+    /*
+      clear localStorage
+      so user won't be
+      automatically logged in afterwards
+    */
+    logoutUser();
+
     // navigate back to login page
     reactRouterNavigate('/', { replace: true });
   };

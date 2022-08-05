@@ -26,13 +26,13 @@ function App() {
             <Route path="loginprogress" element={<LoginProgress />}>
               <Route path=":loginType" element={<LoginProgress />} />
             </Route>
-            <Route element={<ProtectedRoute />} >
+            <Route element={<ProtectedRoute />}>
               <Route path="dashboard" element={<DashboardMain />} />
             </Route>
           </Route>
         </Routes>
       </BrowserRouter>
-    </UserContext.Provider >
+    </UserContext.Provider>
   );
 }
 

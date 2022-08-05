@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -85,8 +86,6 @@ export default function LoginProgress() {
   const reactRouterNavigate = useNavigate();
   // get parameters from URL
   const params = useParams();
-
-  console.log("params", params, params.loginType);
 
   const reactRouterGoto = (path) => {
     reactRouterNavigate(path, { replace: true });

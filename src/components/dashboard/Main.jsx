@@ -13,7 +13,7 @@ export default function DashboardMain() {
   // get user info
   const { user } = React.useContext(UserContext);
   return (
-    <Box pt={3} pb={3} >
+    <Box pt={3} pb={3}>
       <Grid
         container
         spacing={4}
