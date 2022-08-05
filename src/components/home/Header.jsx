@@ -142,7 +142,6 @@ export default function Header() {
               ))}
             </Menu>
           </Box>
-          <WorkIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -159,7 +158,7 @@ export default function Header() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            ACME INC
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -183,16 +182,16 @@ export default function Header() {
                     color="inherit"
                     sx={{ p: 0 }}
                   >
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <AccountCircleIcon />
-                    <Typography variant="subtitle1" component="span">
-                      {user.username}
-                    </Typography>
-                  </Stack>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <AccountCircleIcon />
+                      <Typography variant="subtitle1" component="span">
+                        {user.username}
+                      </Typography>
+                    </Stack>
                   </IconButton>
                 </Tooltip>
                 <Menu
