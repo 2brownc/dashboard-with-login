@@ -12,14 +12,12 @@ import HomeIcon from '@mui/icons-material/Home';
 
 import { useNavigate } from 'react-router-dom';
 
-
 export default function PageNotFound() {
   // fade in the page
   const [show, setShow] = React.useState(false);
   React.useEffect(() => {
     setTimeout(() => { setShow(true); }, 100);
   }, []);
-
 
   /*
     user React Router hook, useNavigate
@@ -29,7 +27,7 @@ export default function PageNotFound() {
 
   const handleGotoHomeButton = () => {
     reactRouterNavigate('../dashboard', { replace: true });
-  }
+  };
 
   return (
     <Fade in={show}>
@@ -44,7 +42,7 @@ export default function PageNotFound() {
             <Paper elevation={3}>
               <Box p={4}>
                 <Stack spacing={3}>
-                  <Typography variant="h3" component='h3'>
+                  <Typography variant="h3" component="h3">
                     404 - Page not found
                   </Typography>
                   <Divider />
@@ -61,6 +59,6 @@ export default function PageNotFound() {
           </Grid>
         </Grid>
       </Container>
-    </Fade >
+    </Fade>
   );
 }
