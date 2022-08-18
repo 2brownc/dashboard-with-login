@@ -36,4 +36,26 @@ A login form is presented; after successful login a dashboard is loaded. An new 
 
 * Non existent paths are redirected to a 404 page.
 
-Built on NodeJS using ReactJS, React Router and Material UI. 
+Built on NodeJS using ReactJS, React Router and Material UI.
+
+## App Screenshots
+
+### Login
+![App Screenshot - Login](<screenshots/Login.png> "Login Page")
+
+### Sign Up
+![App Screenshot - Sign Up](<screenshots/SignUp.png> "Sign Up Page")
+
+### Dashboard
+![App Screenshot - Dashboard](<screenshots/Dashboard.png> "Dashboard Page")  
+
+### Project Info Dialog
+![App Screenshot - Project Info](<screenshots/ProjectInfo.png> "Project Information")  
+
+
+
+
+
+
+
+
