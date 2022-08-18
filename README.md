@@ -1,6 +1,6 @@
 # Dashboard with Login
 
-A login form is presented; after successful login a dashboard is loaded. An new account can also be created using the Signup form. 
+An application dashboard that requires user authentication. A sign up form with form validation is provided for users wishing to create an account. After login a Dashboard is presented with a list of current projects of the fictional company ACME Inc.
 
 ## App Overview
 
