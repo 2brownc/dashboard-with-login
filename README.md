@@ -1,6 +1,8 @@
-# Dashboard with Login
+# [Dashboard with Login](https://dashboardapp.pages.dev/dashboard)
 
 A frontend mock up of an application with dashboard that requires user authentication. A sign up form with form validation is provided for users wishing to create an account. After login a Dashboard is presented with a list of current projects of the fictional company ACME Inc.
+
+[Click here to view.](https://dashboardapp.pages.dev/dashboard)
 
 ## App Overview
 
